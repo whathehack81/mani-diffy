@@ -20,20 +20,20 @@ import (
 
 const InfiniteDepth = -1
 
-const renderAnnotation = "com.chime.mani-diffy/render"
+const skipAnnotation = "mani-diffy.chime.com/skip"
 
 // shouldSkipRender checks if an Application should be skipped based on the
-// com.chime.mani-diffy/render annotation. Returns true if the annotation
-// is explicitly set to "false".
+// mani-diffy.chime.com/skip annotation. Returns true if the annotation
+// is explicitly set to "true".
 func shouldSkipRender(app *v1alpha1.Application) bool {
 	if app.ObjectMeta.Annotations == nil {
 		return false
 	}
-	value, ok := app.ObjectMeta.Annotations[renderAnnotation]
+	value, ok := app.ObjectMeta.Annotations[skipAnnotation]
 	if !ok {
 		return false
 	}
-	return value == "false"
+	return value == "true"
 }
 
 // Renderer is a function that can render an Argo application.
@@ -134,9 +134,9 @@ func (w *Walker) walk(inputPath, outputPath string, depth, maxDepth int, visited
 				continue
 			}
 
-			// Skip Applications with the com.chime.mani-diffy/render annotation set to "false"
+			// Skip Applications with the mani-diffy.chime.com/skip annotation set to "true"
 			if shouldSkipRender(crd) {
-				log.Printf("Skipping %s (com.chime.mani-diffy/render annotation is false)\n", crd.ObjectMeta.Name)
+				log.Printf("Skipping %s (mani-diffy.chime.com/skip annotation is true)\n", crd.ObjectMeta.Name)
 				continue
 			}
 
