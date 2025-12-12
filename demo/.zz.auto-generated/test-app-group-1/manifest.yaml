@@ -70,3 +70,29 @@ spec:
         - ../../overrides/service/foo/test.yaml
   syncPolicy:
     automated: {}
+---
+# Source: app-of-apps/templates/apps.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: test-service-skipped
+  annotations:
+    mani-diffy.chime.com/skip: "true"
+spec:
+  destination:
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    repoURL: https://github.com/chime/mani-diffy.git
+    path: charts/service
+    helm:
+      version: v3
+      parameters:
+      - name: env
+        value: test
+      valueFiles:
+        - ../../overrides/service/skipped/base.yaml
+        - ../../overrides/service/skipped/test.yaml
+  syncPolicy:
+    automated: {}

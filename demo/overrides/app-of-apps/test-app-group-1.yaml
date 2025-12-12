@@ -5,3 +5,6 @@ children:
     chart: service
   baz:
     chart: service
+  skipped:
+    chart: service
+    skipManiDiffy: true

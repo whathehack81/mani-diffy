@@ -5,6 +5,10 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: {{ .root.env }}-service-{{ $appName }}
+  {{- if .childParams.skipManiDiffy }}
+  annotations:
+    mani-diffy.chime.com/skip: "true"
+  {{- end }}
 spec:
   destination:
     namespace: argocd
