@@ -136,7 +136,6 @@ func (w *Walker) walk(inputPath, outputPath string, depth, maxDepth int, visited
 
 			// Skip Applications with the mani-diffy.chime.com/skip annotation set to "true"
 			if shouldSkipRender(crd) {
-				log.Printf("Skipping %s (mani-diffy.chime.com/skip annotation is true)\n", crd.ObjectMeta.Name)
 				continue
 			}
 
