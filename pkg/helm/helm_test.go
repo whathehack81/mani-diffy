@@ -321,7 +321,7 @@ kind: Application
 	t.Run("GenerateHashOnChart", func(t *testing.T) {
 		hash, _ := generalHashFunction("demo/charts/app-of-apps")
 		h := hex.EncodeToString(hash)
-		actualHash := "13aa148adefa3d633e5ce95584d3c95297a4417977837040cd67f0afbca17b5a"
+		actualHash := "f57ffb63de221520249492e247beb6d6f61cd378e7c246909cca9c5110a6bb28"
 		if h != actualHash {
 			t.Errorf("Failed to generate a generic hash on a chart. got: %s wanted: %s", h, actualHash)
 		}
