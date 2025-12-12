@@ -22,18 +22,23 @@ const InfiniteDepth = -1
 
 const skipAnnotation = "mani-diffy.chime.com/skip"
 
-// shouldSkipRender checks if an Application should be skipped based on the
-// mani-diffy.chime.com/skip annotation. Returns true if the annotation
-// is explicitly set to "true".
-func shouldSkipRender(app *v1alpha1.Application) bool {
-	if app.ObjectMeta.Annotations == nil {
-		return false
+// shouldSkipRender checks if an Application should be skipped based on:
+// 1. The application name suffix (ignoreSuffix)
+// 2. The mani-diffy.chime.com/skip annotation set to "true"
+func shouldSkipRender(app *v1alpha1.Application, ignoreSuffix string) bool {
+	// Check if the application name has the ignore suffix
+	if strings.HasSuffix(app.ObjectMeta.Name, ignoreSuffix) {
+		return true
 	}
-	value, ok := app.ObjectMeta.Annotations[skipAnnotation]
-	if !ok {
-		return false
+
+	// Check if the skip annotation is set to "true"
+	if app.ObjectMeta.Annotations != nil {
+		if value, ok := app.ObjectMeta.Annotations[skipAnnotation]; ok && value == "true" {
+			return true
+		}
 	}
-	return value == "true"
+
+	return false
 }
 
 // Renderer is a function that can render an Argo application.
@@ -130,12 +135,7 @@ func (w *Walker) walk(inputPath, outputPath string, depth, maxDepth int, visited
 				continue
 			}
 
-			if strings.HasSuffix(crd.ObjectMeta.Name, w.ignoreSuffix) {
-				continue
-			}
-
-			// Skip Applications with the mani-diffy.chime.com/skip annotation set to "true"
-			if shouldSkipRender(crd) {
+			if shouldSkipRender(crd, w.ignoreSuffix) {
 				continue
 			}
 
